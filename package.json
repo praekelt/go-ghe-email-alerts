@@ -1,0 +1,40 @@
+{
+  "name": "go-ghr-email-alerts",
+  "version": "0.1.0",
+  "description": "A Vumi Go Javascript sandbox application to send email alerts when keywords are encountered in messages.",
+  "main": "lib/app.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:praekelt/go-ghr-email-alerts.git"
+  },
+  "keywords": [
+    "vumi",
+    "sandbox"
+  ],
+  "author": "Praekelt Foundation",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/praekelt/go-ghr-email-alerts/issues"
+  },
+  "homepage": "https://github.com/praekelt/go-ghr-email-alerts",
+  "dependencies": {
+    "vumigo_v02": "~0.2",
+    "q": "~0.9",
+    "lodash": "~2.4.1",
+    "moment": "~2.5.1"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-concat": "^1.0.0",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-mocha-test": "^0.12.7",
+    "jshint": "^2.9.1",
+    "mocha": "^2.4.5",
+    "should": "^10.0.0"
+  }
+}
