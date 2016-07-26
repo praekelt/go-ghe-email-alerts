@@ -1,5 +1,4 @@
-# go-ghe-email-alerts
-
+go-ghe-email-alerts
 =================
 
 |travis|_
