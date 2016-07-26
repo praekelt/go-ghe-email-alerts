@@ -4,7 +4,6 @@ var AppTester = vumigo.AppTester;
 var test_config = require('./config');
 var utils = require('../src/utils');
 require('should');
-require('replay');
 
 describe("app", function () {
   describe("GoApp", function () {
