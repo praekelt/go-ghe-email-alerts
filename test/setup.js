@@ -1,2 +1,1 @@
-global.go = {
-};
+global.go = {};

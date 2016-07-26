@@ -5,43 +5,50 @@
 var go = {};
 go;
 
-go.app = function() {
-    var vumigo = require('vumigo_v02');
-    var App = vumigo.App;
-    var EndState = vumigo.states.EndState;
-    var utils = require('./utils');
+go.app = function () {
+  var vumigo = require('vumigo_v02');
+  var App = vumigo.App;
+  var EndState = vumigo.states.EndState;
+  var utils = require('./utils');
+  var Q = require('q');
 
-    var GoApp = App.extend(function(self) {
-        App.call(self, 'states:start');
-        
-        self.states.add('states:start', function(name) {
-            state = new EndState(name, {
-                text: '',
-                next: 'states:start'
+  var GoApp = App.extend(function (self) {
+    App.call(self, 'states:start');
+
+    self.states.add('states:start', function (name) {
+      var config = self.im.config;
+      var found = utils.process_keywords(self.im.msg, config.keywords);
+      var usr_addr = utils.format_address(self.im.msg.from_addr);
+      var state = new EndState(name, {
+        text: config.welcome_message,
+        next: 'states:start'
+      });
+
+      return Q.promise(function (resolve, reject) {
+        if (found) {
+          return utils.send_email(config.email_config, usr_addr, self.im)
+            .then(function () {
+              return resolve(state);
             });
-
-            state.display = function end_state_display() {
-                config = state.im.config;
-                utils.process_keywords(state.im.msg, config.keywords, config.email_config);
-                return config.welcome_message;
-            };
-
-            return state;
-        });
+        } else {
+          return resolve(state);
+        }
+      });
     });
+  });
 
-    return {
-        GoApp: GoApp
-    };
+  return {
+    GoApp: GoApp
+  };
 }();
 
-go.init = function() {
-    var vumigo = require('vumigo_v02');
-    var InteractionMachine = vumigo.InteractionMachine;
-    var GoApp = go.app.GoApp;
+go.init = function () {
+  var vumigo = require('vumigo_v02');
+  var InteractionMachine = vumigo.InteractionMachine;
+  var GoApp = go.app.GoApp;
 
 
-    return {
-        im: new InteractionMachine(api, new GoApp())
-    };
+  return {
+    im: new InteractionMachine(api, new GoApp())
+  };
 }();
