@@ -87,11 +87,9 @@ go.utils = function () {
         body: body
       })
       .then(function (response) {
-        im.log(response);
-        return true;
+        return im.log(response).thenResolve(true);
       }).catch(function (err) {
-        im.log(err);
-        return false;
+        return im.log(err).thenResolve(false);
       });
   }
 
