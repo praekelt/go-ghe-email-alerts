@@ -1,20 +1,19 @@
-var _ = require('lodash');
-var Q = require('q');
-var vumigo = require('vumigo_v02');
-var HttpApi = vumigo.http.api.HttpApi;
+go.utils = function () {
+  var _ = require('lodash');
+  var vumigo = require('vumigo_v02');
+  var HttpApi = vumigo.http.api.HttpApi;
 
-function format_address(address) {
-  if (isNoU(address) || address.length === 0) {
-    return '';
+  function format_address(address) {
+    if (isNoU(address) || address.length === 0) {
+      return '';
+    }
+
+    var len = address.length;
+    var last_4_digits = address.slice(-4, len);
+    return (len > 4 ? Array(len - 3).join('*') : '') + last_4_digits;
   }
 
-  var len = address.length;
-  var last_4_digits = address.slice(-4, len);
-  return (len > 4 ? Array(len - 3).join('*') : '') + last_4_digits;
-}
-
-function send_email(email_config, usr_addr, im) {
-  return Q.promise(function (resolve, reject) {
+  function send_email(email_config, usr_addr, im) {
     var options = {
       headers: {
         'Authorization': 'Bearer ' + email_config.api_key,
@@ -46,45 +45,46 @@ function send_email(email_config, usr_addr, im) {
       })
       .then(function (response) {
         console.log(response);
-        return resolve(true);
+        return true;
       }).catch(function (err) {
-        consle.log(err);
+        console.log(err);
+        return false;
       });
-  });
-}
-
-function process_keywords(msg, keywords) {
-  var usr_msg = msg.content;
-  var found = false;
-
-  if (
-    isNoU(usr_msg) ||
-    isNoU(keywords) ||
-    !_.isArray(keywords) ||
-    (_.isArray(keywords) && keywords.length === 0)
-  ) {
-    return;
   }
 
-  _.each(keywords, function (keyword) {
-    var rx = new RegExp('^' + keyword + '\\s|\\s' + keyword + '$|\\s' + keyword + '\\s', 'i');
-    var m = rx.exec(usr_msg);
-    if (!_.isNull(m)) {
-      found = true;
-      return false;
+  function process_keywords(msg, keywords) {
+    var usr_msg = msg.content;
+    var found = false;
+
+    if (
+      isNoU(usr_msg) ||
+      isNoU(keywords) ||
+      !_.isArray(keywords) ||
+      (_.isArray(keywords) && keywords.length === 0)
+    ) {
+      return;
     }
-  });
 
-  return found;
-}
+    _.each(keywords, function (keyword) {
+      var rx = new RegExp('^' + keyword + '\\s|\\s' + keyword + '$|\\s' + keyword + '\\s', 'i');
+      var m = rx.exec(usr_msg);
+      if (!_.isNull(m)) {
+        found = true;
+        return false;
+      }
+    });
 
-function isNoU(value) {
-  return _.isNull(value) || _.isUndefined(value);
-}
+    return found;
+  }
 
-module.exports = {
-  format_address: format_address,
-  send_email: send_email,
-  process_keywords: process_keywords,
-  isNoU: isNoU
-};
+  function isNoU(value) {
+    return _.isNull(value) || _.isUndefined(value);
+  }
+
+  return {
+    format_address: format_address,
+    send_email: send_email,
+    process_keywords: process_keywords,
+    isNoU: isNoU
+  };
+}();
