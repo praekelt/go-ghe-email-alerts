@@ -87,10 +87,10 @@ go.utils = function () {
         body: body
       })
       .then(function (response) {
-        console.log(response);
+        im.log(response);
         return true;
       }).catch(function (err) {
-        console.log(err);
+        im.log(err);
         return false;
       });
   }
