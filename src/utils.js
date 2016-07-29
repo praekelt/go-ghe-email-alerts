@@ -1,7 +1,7 @@
 go.utils = function () {
   var _ = require('lodash');
   var vumigo = require('vumigo_v02');
-  var HttpApi = vumigo.http.api.HttpApi;
+  var JsonApi = vumigo.http.api.JsonApi;
 
   function format_address(address) {
     if (isNoU(address) || address.length === 0) {
@@ -16,37 +16,44 @@ go.utils = function () {
   function send_email(email_config, usr_addr, im) {
     var options = {
       headers: {
-        'Authorization': 'Bearer ' + email_config.api_key,
-        'Content-Type': 'application/json'
+        Authorization: 'Bearer ' + email_config.api_key
       }
     };
 
     var body = {
-      "personalizations": [{
-        "to": [{
-          "email": email_config.to
+      personalizations: [{
+        to: [{
+          email: email_config.to
         }],
-        "subject": email_config.subject
+        subject: email_config.subject,
+        substitutions: {
+          ':user_address:': usr_addr,
+          ':message:': im.msg.content
+        }
       }],
-      "from": {
-        "email": email_config.from,
-        "name": email_config.from_name
+      from: {
+        email: email_config.from,
+        name: email_config.from_name
       },
-      "template_id": email_config.template,
-      "custom_args": {
-        "user_address": usr_addr
-      }
+      template_id: email_config.template,
+      content: [{
+        type: 'text/html',
+        value: 'test'
+      }]
     };
 
-    var api = new HttpApi(im, options);
+    var api = new JsonApi(im, options);
 
     return api.post('https://api.sendgrid.com/v3/mail/send', {
-        body: body
+        data: body
       })
       .then(function (response) {
-        return im.log(response).thenResolve(true);
+        return im.log.info('post to sendgrid was succesful').thenResolve(true);
       }).catch(function (err) {
-        return im.log(err).thenResolve(false);
+        return im.log.error([
+          'post to sendgrid failed. Reason: ',
+          JSON.stringify(err)
+        ].join(' ')).thenResolve(false);
       });
   }
 
