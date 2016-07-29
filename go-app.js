@@ -59,7 +59,9 @@ go.utils = function () {
   function send_email(email_config, usr_addr, im) {
     var options = {
       headers: {
-        Authorization: 'Bearer ' + email_config.api_key
+        Authorization: [
+          ['Bearer ', email_config.api_key].join('')
+        ]
       }
     };
 
