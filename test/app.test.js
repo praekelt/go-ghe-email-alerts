@@ -64,10 +64,11 @@ describe("app", function () {
             req.body.personalizations[0].to.length.should.eql(1);
             req.body.personalizations[0].to[0].email.should.eql(email_config.to);
             req.body.personalizations[0].subject.should.eql(email_config.subject);
+            req.body.personalizations[0].substitutions[':user_address:'].should.eql(go.utils.format_address(im.msg.from_addr));
+            req.body.personalizations[0].substitutions[':message:'].should.eql(im.msg.content);
             req.body.from.email.should.eql(email_config.from);
             req.body.from.name.should.eql(email_config.from_name);
             req.body.template_id.should.eql(email_config.template);
-            req.body.custom_args.user_address.should.eql(go.utils.format_address(im.msg.from_addr));
           })
           .check.reply.ends_session()
           .run();
