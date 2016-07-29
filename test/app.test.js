@@ -57,18 +57,17 @@ describe("app", function () {
 
             // headers
             req.headers.Authorization.should.eql('Bearer ' + email_config.api_key);
-            req.headers['Content-Type'].should.eql('application/json');
 
-            // body
-            req.body.personalizations.length.should.eql(1);
-            req.body.personalizations[0].to.length.should.eql(1);
-            req.body.personalizations[0].to[0].email.should.eql(email_config.to);
-            req.body.personalizations[0].subject.should.eql(email_config.subject);
-            req.body.personalizations[0].substitutions[':user_address:'].should.eql(go.utils.format_address(im.msg.from_addr));
-            req.body.personalizations[0].substitutions[':message:'].should.eql(im.msg.content);
-            req.body.from.email.should.eql(email_config.from);
-            req.body.from.name.should.eql(email_config.from_name);
-            req.body.template_id.should.eql(email_config.template);
+            // data
+            req.data.personalizations.length.should.eql(1);
+            req.data.personalizations[0].to.length.should.eql(1);
+            req.data.personalizations[0].to[0].email.should.eql(email_config.to);
+            req.data.personalizations[0].subject.should.eql(email_config.subject);
+            req.data.personalizations[0].substitutions[':user_address:'].should.eql(go.utils.format_address(im.msg.from_addr));
+            req.data.personalizations[0].substitutions[':message:'].should.eql(im.msg.content);
+            req.data.from.email.should.eql(email_config.from);
+            req.data.from.name.should.eql(email_config.from_name);
+            req.data.template_id.should.eql(email_config.template);
           })
           .check.reply.ends_session()
           .run();
