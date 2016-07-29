@@ -26,16 +26,17 @@ go.utils = function () {
         "to": [{
           "email": email_config.to
         }],
-        "subject": email_config.subject
+        "subject": email_config.subject,
+        "substitutions": {
+          ":user_address:": usr_addr,
+          ":message:": im.msg.content
+        }
       }],
       "from": {
         "email": email_config.from,
         "name": email_config.from_name
       },
-      "template_id": email_config.template,
-      "custom_args": {
-        "user_address": usr_addr
-      }
+      "template_id": email_config.template
     };
 
     var api = new HttpApi(im, options);
