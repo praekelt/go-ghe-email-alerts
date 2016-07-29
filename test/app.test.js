@@ -56,7 +56,9 @@ describe("app", function () {
             req.url.should.eql('https://api.sendgrid.com/v3/mail/send');
 
             // headers
-            req.headers.Authorization.should.eql('Bearer ' + email_config.api_key);
+            req.headers.Authorization.should.eql([
+              ['Bearer ', email_config.api_key].join('')
+            ]);
 
             // data
             req.data.personalizations.length.should.eql(1);
